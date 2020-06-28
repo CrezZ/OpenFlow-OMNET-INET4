@@ -21,6 +21,7 @@
 
 #include <openflow/openflow/protocol/OpenFlow.h>
 #include <string>
+#include "inet/common/packet/Packet.h"
 
 namespace ofp {
 class OFP_Features_Reply;
@@ -31,7 +32,7 @@ class OFP_Packet_Out;
 class OFP_Flow_Mod;
 } /* namespace ofp */
 
-namespace inet {
+/*namespace inet { OLD
 class EthernetIIFrame;
 } /* namespace inet */
 
@@ -93,7 +94,7 @@ public:
      * @param sendFullFrame True if the full frame should be transmitted.
      * @return              The created message.
      */
-    virtual OFP_Packet_In* createPacketIn(ofp_packet_in_reason reason, inet::EthernetIIFrame *frame, uint32_t buffer_id = OFP_NO_BUFFER, bool sendFullFrame = true) = 0;
+    virtual OFP_Packet_In* createPacketIn(ofp_packet_in_reason reason, inet::Packet *packet, uint32_t buffer_id = OFP_NO_BUFFER, bool sendFullFrame = true) = 0;
 
     /**
      * Create an OFP_Packet_Out message.
@@ -104,7 +105,7 @@ public:
      * @param frame         The frame to encapsulate if not buffered.
      * @return              The created message.
      */
-    virtual OFP_Packet_Out* createPacketOut(uint32_t* outports, int n_outports, int in_port, uint32_t buffer_id = OFP_NO_BUFFER, inet::EthernetIIFrame *frame = nullptr) = 0;
+    virtual OFP_Packet_Out* createPacketOut(uint32_t* outports, int n_outports, int in_port, uint32_t buffer_id = OFP_NO_BUFFER, inet::Packet *packet = nullptr) = 0;
 };
 
 } /* namespace ofp */

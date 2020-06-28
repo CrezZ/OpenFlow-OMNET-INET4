@@ -21,7 +21,7 @@ struct compNodeInt {
 
 
 void OpenFlowGraphAnalyzer::initialize(int stage) {
-    if (stage == INITSTAGE_LINK_LAYER_2) {
+    if (stage == INITSTAGE_LINK_LAYER) {
         const char *NodeType = par("NodeType");
         considerOnlyEndToEnd = par("considerOnlyEndToEnd");
 

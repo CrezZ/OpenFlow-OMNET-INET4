@@ -53,9 +53,9 @@ OF100_FlowTableEntry::OF100_FlowTableEntry(omnetpp::cXMLElement* xmlDoc) : OF_Fl
         if(const char* value = xmlMatch->getAttribute("in_port"))
             _match.in_port = atoi(value);
         if(const char* value = xmlMatch->getAttribute("dl_src"))
-            _match.dl_src = MACAddress(value);
+            _match.dl_src = MacAddress(value);
         if(const char* value = xmlMatch->getAttribute("dl_dst"))
-            _match.dl_dst = MACAddress(value);
+            _match.dl_dst = MacAddress(value);
         if(const char* value = xmlMatch->getAttribute("dl_vlan"))
             _match.dl_vlan = atoi(value);
         if(const char* value = xmlMatch->getAttribute("dl_vlan_pcp"))
@@ -65,9 +65,9 @@ OF100_FlowTableEntry::OF100_FlowTableEntry(omnetpp::cXMLElement* xmlDoc) : OF_Fl
         if(const char* value = xmlMatch->getAttribute("nw_proto"))
             _match.nw_proto = atoi(value);
         if(const char* value = xmlMatch->getAttribute("nw_src"))
-            _match.nw_src = IPv4Address(value);
+            _match.nw_src = Ipv4Address(value);
         if(const char* value = xmlMatch->getAttribute("nw_dst"))
-            _match.nw_dst = IPv4Address(value);
+            _match.nw_dst = Ipv4Address(value);
         if(const char* value = xmlMatch->getAttribute("tp_src"))
             _match.tp_src = atoi(value);
         if(const char* value = xmlMatch->getAttribute("tp_dst"))

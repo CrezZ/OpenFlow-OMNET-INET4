@@ -44,7 +44,7 @@
 						</toolChain>
 					</folderInfo>
 					<sourceEntries>
-						<entry excluding="openflow/openflow/controller/old|openflow/realtime|modifiedInet" flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name="src"/>
+						<entry excluding="openflow/hyperflow|openflow/messages/kandoo|openflow/messages/hyperflow|openflow/kandoo|openflow/controllerApps|openflow/openflow/controller/old|openflow/realtime|modifiedInet" flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name="src"/>
 					</sourceEntries>
 				</configuration>
 			</storageModule>
@@ -90,7 +90,7 @@
 						</toolChain>
 					</folderInfo>
 					<sourceEntries>
-						<entry excluding="openflow/openflow/controller/old|openflow/realtime|modifiedInet" flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name="src"/>
+						<entry excluding="openflow/hyperflow|openflow/messages/kandoo|openflow/messages/hyperflow|openflow/kandoo|openflow/controllerApps|openflow/openflow/controller/old|openflow/realtime|modifiedInet" flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name="src"/>
 					</sourceEntries>
 				</configuration>
 			</storageModule>

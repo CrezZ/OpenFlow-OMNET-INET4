@@ -4,9 +4,10 @@
 #include "openflow/hostApps/PingAppRandom.h"
 
 #include "inet/networklayer/common/L3AddressResolver.h"
-#include "inet/applications/pingapp/PingPayload_m.h"
-#include "inet/networklayer/contract/ipv4/IPv4ControlInfo.h"
-#include "inet/networklayer/contract/ipv6/IPv6ControlInfo.h"
+#include "inet/applications/pingapp/PingApp.h"
+#include "inet/networklayer/ipv4/IcmpHeader_m.h"
+//#include "inet/networklayer/contract/ipv4/IPv4ControlInfo.h"
+//#include "inet/networklayer/contract/ipv6/IPv6ControlInfo.h"
 
 #include <iostream>
 #include <functional>
@@ -32,12 +33,12 @@ void PingAppRandom::initialize(int stage){
 
 void PingAppRandom::handleMessage(cMessage *msg){
 
-    if (!isNodeUp()){
+  /*  if (!isNodeUp()){
             if (msg->isSelfMessage())
                 throw cRuntimeError("Application is not running");
             delete msg;
             return;
-        }
+        }*/
         if (msg == timer){
             // connect to random destination node
             unsigned nodeNum = topo.getNumNodes();
@@ -57,18 +58,18 @@ void PingAppRandom::handleMessage(cMessage *msg){
             srcAddr = inet::L3AddressResolver().resolve(par("srcAddr"));
             EV << "Starting up: dest=" << destAddr << "  src=" << srcAddr << "\n";
 
-            sendPing();
+            sendPingRequest();
             if (isEnabled())
                 scheduleNextPingRequest(simTime(), true);
         } else {
-            inet::PingPayload * pingMsg = check_and_cast<inet::PingPayload *>(msg);
+            inet::IcmpEchoRequest * pingMsg = omnetpp::check_and_cast<inet::IcmpEchoRequest *>(msg);
 
             //generate and emit hash
             std::stringstream hashString;
-            hashString << "SeqNo-" << pingMsg->getSeqNo() << "-Pid-" << pingMsg->getOriginatorId();
+            hashString << "SeqNo-" << pingMsg->getSeqNumber() << "-Pid-" << pingMsg->getIdentifier();
             unsigned long hash = std::hash<std::string>()(hashString.str().c_str());
             emit(pingPacketHash,hash);
-            processPingResponse(pingMsg);
+            processPingResponse(pingMsg->getIdentifier(),pingMsg->getSeqNumber(),(Packet *)msg);
 
         }
         if (hasGUI()){

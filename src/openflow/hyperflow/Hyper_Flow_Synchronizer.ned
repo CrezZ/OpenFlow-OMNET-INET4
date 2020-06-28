@@ -5,7 +5,7 @@ import inet.linklayer.ethernet.EthernetInterface;
 import inet.networklayer.common.InterfaceTable;
 import inet.networklayer.contract.INetworkLayer;
 import inet.networklayer.contract.IRoutingTable;
-import inet.transportlayer.contract.ITCP;
+import inet.transportlayer.contract.ITcp;
 
 
 //
@@ -43,7 +43,7 @@ module Hyper_Flow_Synchronizer
             parameters:
                 @display("p=422,35");
         }
-        tcp: <tcpType> like ITCP {
+        tcp: <tcpType> like ITcp {
             parameters:
                 @display("p=246,138");
         }

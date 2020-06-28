@@ -7,9 +7,9 @@
 #include "openflow/hostApps/LocalityPingAppRandom.h"
 
 #include "inet/networklayer/common/L3AddressResolver.h"
-#include "inet/applications/pingapp/PingPayload_m.h"
-#include "inet/networklayer/contract/ipv4/IPv4ControlInfo.h"
-#include "inet/networklayer/contract/ipv6/IPv6ControlInfo.h"
+#include "inet/applications/pingapp/PingApp_m.h"
+//#include "inet/networklayer/contract/ipv4/Ipv4ControlInfo.h"
+//#include "inet/networklayer/contract/ipv6/Ipv6ControlInfo.h"
 
 using namespace std;
 
@@ -59,12 +59,12 @@ void LocalityPingAppRandom::initialize(int stage){
 
 void LocalityPingAppRandom::handleMessage(cMessage *msg){
 
-    if (!isNodeUp()){
+/*    if (!isNodeUp()){
         if (msg->isSelfMessage())
             throw cRuntimeError("Application is not running");
         delete msg;
         return;
-    }
+    }*/
     if (msg == timer){
         //determine local oder global
         std::string tempTarget = "";
@@ -103,7 +103,7 @@ void LocalityPingAppRandom::handleMessage(cMessage *msg){
             srcAddr = L3AddressResolver().resolve(par("srcAddr"));
             EV << "Starting up: dest=" << destAddr << "  src=" << srcAddr << "\n";
 
-            sendPing();
+            sendPingRequest();
         }
 
         if (isEnabled())
@@ -111,7 +111,9 @@ void LocalityPingAppRandom::handleMessage(cMessage *msg){
 
     }
     else {
-        processPingResponse(check_and_cast<PingPayload *>(msg));
+
+       // processPingResponse(omnetpp::check_and_cast<inet::Packet *>(msg));
+        //TODO:: processPingResponse(int identifier, int seqNumber, Packet *packet);
     }
 
     if (hasGUI()){

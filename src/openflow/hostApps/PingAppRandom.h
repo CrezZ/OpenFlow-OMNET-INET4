@@ -18,14 +18,14 @@ namespace ofp{
 class PingAppRandom : public inet::PingApp {
   protected:
     virtual void initialize(int stage);
-    virtual void handleMessage(cMessage *msg);
+    virtual void handleMessage(omnetpp::cMessage *msg);
     virtual bool isEnabled();
 
-    cTopology topo;
+    omnetpp::cTopology topo;
     std::string connectAddress;
 
     //stats
-    simsignal_t pingPacketHash;
+    omnetpp::simsignal_t pingPacketHash;
 };
 
 } /*end namespace ofp*/

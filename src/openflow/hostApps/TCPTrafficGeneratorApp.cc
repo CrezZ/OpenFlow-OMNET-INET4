@@ -10,7 +10,7 @@ using namespace inet;
 
 namespace ofp{
 
-Define_Module(TCPTrafficGeneratorApp);
+//Define_Module(TCPTrafficGeneratorApp); //TODO: What is?
 
 void TCPTrafficGeneratorApp::initialize(){
     topo.extractByNedTypeName(cStringTokenizer(par("destinationNedType")).asVector());
@@ -58,10 +58,10 @@ void TCPTrafficGeneratorApp::handleMessage(cMessage *msg){
                 destAddr = L3AddressResolver().resolve(connectAddress.c_str());
             }
             //generate socket
-            TCPSocket *tempSocket = new TCPSocket();
+            TcpSocket *tempSocket = new TcpSocket();
             tempSocket->setOutputGate(gate("tcpOut"));
-            tempSocket->setDataTransferMode(TCP_TRANSFER_OBJECT);
-            tempSocket->setCallbackObject(this,tempSocket);
+          //  tempSocket->setDataTransferMode(TCP_TRANSFER_OBJECT);
+            //tempSocket->setCallbackObject(this,tempSocket); //TODO!
             int connectPort = par("connectPort");
 
             tempSocket->connect(destAddr, connectPort);
@@ -69,7 +69,7 @@ void TCPTrafficGeneratorApp::handleMessage(cMessage *msg){
 
 
             //generate packet
-            cPacket *packet = new cPacket();
+            Packet *packet = new Packet();
             int pos = floor(uniform(0,lineNumbers));
 
             //get the size of the nth line
@@ -109,10 +109,10 @@ void TCPTrafficGeneratorApp::handleMessage(cMessage *msg){
         }
         delete msg;
     } else {
-        if(TCPSocket::belongsToAnyTCPSocket(msg)){
+       // if(TcpSocket::belongsToAnyTcpSocket(msg)){ //TODO
             //find the socket
-            std::map<TCPSocket *, Stats>::iterator iterConn;
-            TCPSocket * tempSocket = NULL;
+            std::map<TcpSocket *, Stats>::iterator iterConn;
+            TcpSocket * tempSocket = NULL;
             for(iterConn=statistics.begin();iterConn!=statistics.end();iterConn++){
                 if(iterConn->first->belongsToSocket(msg)){
                     tempSocket = iterConn->first;
@@ -127,9 +127,9 @@ void TCPTrafficGeneratorApp::handleMessage(cMessage *msg){
                 error("This should not happen!");
             }
 
-        } else {
+       /* } else { //TODO
             delete msg;
-        }
+        }*/
     }
 }
 
@@ -141,16 +141,16 @@ void TCPTrafficGeneratorApp::socketDataArrived(int connId, void *yourPtr, cPacke
 
 void TCPTrafficGeneratorApp::socketEstablished(int connId, void *yourPtr) {
     EV<< "TCPTrafficGenerator Connection Established" << endl;
-    if (static_cast<TCPSocket *>(yourPtr) != NULL) {
-        TCPSocket *tempSocket = (TCPSocket *)yourPtr;
+    if (static_cast<TcpSocket *>(yourPtr) != NULL) {
+        TcpSocket *tempSocket = (TcpSocket *)yourPtr;
         statistics[tempSocket].connectionEstablished = simTime();
     }
 }
 
 void TCPTrafficGeneratorApp::socketPeerClosed(int connId, void *yourPtr) {
     EV<< "TCPTrafficGenerator Peer Closed -> Closing Too" << endl;
-    if (static_cast<TCPSocket *>(yourPtr) != NULL) {
-        TCPSocket *tempSocket = (TCPSocket *)yourPtr;
+    if (static_cast<TcpSocket *>(yourPtr) != NULL) {
+        TcpSocket *tempSocket = (TcpSocket *)yourPtr;
         statistics[tempSocket].connectionFinished=simTime();
 
         //emit vectors
@@ -165,8 +165,8 @@ void TCPTrafficGeneratorApp::socketPeerClosed(int connId, void *yourPtr) {
 
 void TCPTrafficGeneratorApp::socketClosed(int connId, void *yourPtr) {
     EV<< "TCPTrafficGenerator Socket Closed" << endl;
-    if (static_cast<TCPSocket *>(yourPtr) != NULL) {
-            TCPSocket *tempSocket = (TCPSocket *)yourPtr;
+    if (static_cast<TcpSocket *>(yourPtr) != NULL) {
+        TcpSocket *tempSocket = (TcpSocket *)yourPtr;
             //remove the socket
             statistics.erase(tempSocket);
 
@@ -185,7 +185,7 @@ void TCPTrafficGeneratorApp::socketFailure(int connId, void *yourPtr, int code) 
         EV << "Connection timed out!\\n";
 }
 
-void TCPTrafficGeneratorApp::socketStatusArrived(int connId, void *yourPtr, TCPStatusInfo *status) {
+void TCPTrafficGeneratorApp::socketStatusArrived(int connId, void *yourPtr, TcpStatusInfo *status) {
     EV<< "TCPTrafficGenerator Status Arrived" << endl;
     delete status;
 }

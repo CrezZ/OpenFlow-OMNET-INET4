@@ -146,9 +146,9 @@ void Flow_Table::importFromXML(cXMLElement* xmlDoc) {
             if(const char* value = xmlMatch->getAttribute("in_port"))
                 match.in_port = atoi(value);
             if(const char* value = xmlMatch->getAttribute("dl_src"))
-                match.dl_src = MACAddress(value);
+                match.dl_src = MacAddress(value);
             if(const char* value = xmlMatch->getAttribute("dl_dst"))
-                match.dl_dst = MACAddress(value);
+                match.dl_dst = MacAddress(value);
             if(const char* value = xmlMatch->getAttribute("dl_vlan"))
                 match.dl_vlan = atoi(value);
             if(const char* value = xmlMatch->getAttribute("dl_vlan_pcp"))
@@ -158,9 +158,9 @@ void Flow_Table::importFromXML(cXMLElement* xmlDoc) {
             if(const char* value = xmlMatch->getAttribute("nw_proto"))
                 match.nw_proto = atoi(value);
             if(const char* value = xmlMatch->getAttribute("nw_src"))
-                match.nw_src = IPv4Address(value);
+                match.nw_src = Ipv4Address(value);
             if(const char* value = xmlMatch->getAttribute("nw_dst"))
-                match.nw_dst = IPv4Address(value);
+                match.nw_dst = Ipv4Address(value);
             if(const char* value = xmlMatch->getAttribute("tp_src"))
                 match.tp_src = atoi(value);
             if(const char* value = xmlMatch->getAttribute("tp_dst"))

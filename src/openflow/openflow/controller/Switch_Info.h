@@ -20,15 +20,15 @@ class Switch_Info {
         void setMacAddress(std::string macAddress);
         int getNumOfPorts() const;
         void setNumOfPorts(int numOfPorts);
-        inet::TCPSocket* getSocket() const;
-        void setSocket(inet::TCPSocket* socket);
+        inet::TcpSocket* getSocket() const;
+        void setSocket(inet::TcpSocket* socket);
 
 
     protected:
         int connID;
         int numOfPorts;
         std::string macAddress;
-        inet::TCPSocket *socket;
+        inet::TcpSocket *socket;
         int version;
 
 };

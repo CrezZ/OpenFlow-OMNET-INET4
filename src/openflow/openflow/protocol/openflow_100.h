@@ -18,8 +18,8 @@ namespace ofp{
 struct oxm_basic_match {
     uint32_t wildcards;        /* Wildcard fields. */
     uint16_t in_port;          /* Input switch port. */
-    inet::MACAddress dl_src; /* Ethernet source address. */
-    inet::MACAddress dl_dst; /* Ethernet destination address. */
+    inet::MacAddress dl_src; /* Ethernet source address. */
+    inet::MacAddress dl_dst; /* Ethernet destination address. */
     uint16_t dl_vlan;          /* Input VLAN id. */
     uint8_t dl_vlan_pcp;       /* Input VLAN priority. */
     uint8_t pad1[1];           /* Align to 64-bits */
@@ -28,8 +28,8 @@ struct oxm_basic_match {
     uint8_t nw_proto;          /* IP protocol or lower 8 bits of
                                 * ARP opcode. */
     uint8_t pad2[2];           /* Align to 64-bits */
-    inet::IPv4Address nw_src;           /* IP source address. */
-    inet::IPv4Address nw_dst;           /* IP destination address. */
+    inet::Ipv4Address nw_src;           /* IP source address. */
+    inet::Ipv4Address nw_dst;           /* IP destination address. */
     uint16_t tp_src;           /* TCP/UDP source port. */
     uint16_t tp_dst;           /* TCP/UDP destination port. */
 };

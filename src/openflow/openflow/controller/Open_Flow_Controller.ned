@@ -1,14 +1,14 @@
 
 
 package openflow.openflow.controller;
-import inet.applications.contract.ITCPApp;
+import inet.applications.contract.IApp; //TODO - select right app
 import inet.linklayer.ethernet.EthernetInterface;
 import inet.networklayer.common.InterfaceTable;
 import inet.networklayer.contract.INetworkLayer;
 import inet.networklayer.contract.IRoutingTable;
-import inet.transportlayer.contract.ITCP;
+import inet.transportlayer.contract.ITcp;
 import openflow.controllerApps.AbstractControllerApp;
-
+import inet.common.MessageDispatcher;
 
 //
 // TODO documentation
@@ -47,11 +47,11 @@ module Open_Flow_Controller
                 @display("p=519,141,row,60");
         }
 
-        tcpControllerApps[numTcpControllerApps]: <> like ITCPApp {
+        tcpControllerApps[numTcpControllerApps]: <> like IApp {
             parameters:
                 @display("p=200,141,row,60");
         }
-        tcp: <tcpType> like ITCP {
+        tcp: <tcpType> like ITcp {
             parameters:
                 @display("p=200,278");
         }
@@ -63,10 +63,18 @@ module Open_Flow_Controller
             parameters:
                 @display("p=355,278;q=queue");
             gates:
-                ifIn[sizeof(ethg)];
-                ifOut[sizeof(ethg)];
+//                ifIn[sizeof(ethg)];
+//                ifOut[sizeof(ethg)];
         }
-        eth[sizeof(ethg)]: EthernetInterface {
+       l7: MessageDispatcher {
+            parameters:
+                @display("p=750,446;b=1000,5,,,,1");
+        }        
+ 	   l4: MessageDispatcher {
+            parameters:
+                @display("p=750,446;b=1000,5,,,,1");
+        }       
+         eth[sizeof(ethg)]: EthernetInterface {
             parameters:
                 @display("p=519,278,row,90;q=txQueue");
         }
@@ -79,22 +87,28 @@ module Open_Flow_Controller
             serviceTime = serviceTime;
         }
     connections allowunconnected:
-        tcp.ipOut --> networkLayer.transportIn++;
-        tcp.ipIn <-- networkLayer.transportOut++;
+        tcp.ipOut --> l7.in++;
+        networkLayer.transportIn <-- l7.out++;
+        tcp.ipIn <-- l7.out++;
+        networkLayer.transportOut --> l7.in++;
 
         for i=0..sizeof(ethg)-1 {
             ethg[i] <--> eth[i].phys;
-            eth[i].upperLayerOut --> networkLayer.ifIn[i];
-            eth[i].upperLayerIn <-- networkLayer.ifOut[i];
+            eth[i].upperLayerOut --> l7.in++;
+            eth[i].upperLayerIn <-- l7.out++;
         }
 
         for i=0..numTcpControllerApps-1 {
-            tcpControllerApps[i].tcpOut --> tcp.appIn++;
-            tcpControllerApps[i].tcpIn <-- tcp.appOut++;
+            tcpControllerApps[i].socketOut --> l4.in++;
+            tcp.appIn <--l4.out++;
+            tcpControllerApps[i].socketIn <-- l4.out++;
+            tcp.appOut -->l4.in++;
         }
 
-        tcp.appOut++ --> OF_Controller.tcpIn;
-        OF_Controller.tcpOut --> tcp.appIn++;
+        tcp.appOut --> l7.in++;
+        OF_Controller.tcpIn <--l7.out++;
+        OF_Controller.tcpOut --> l7.in++;
+        tcp.appIn <--l7.out++;
 }
 
 
