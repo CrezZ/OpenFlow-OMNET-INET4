@@ -6,14 +6,14 @@
 #include <openflow/openflow/protocol/OpenFlow.h>
 #include <list>
 #include "openflow/openflow/controller/OF_Controller.h"
-#include "inet/transportlayer/contract/tcp/TCPSocket.h"
+#include "inet/transportlayer/contract/tcp/TcpSocket.h"
 #include "openflow/messages/openflowprotocol/OFP_Packet_In.h"
 #include "openflow/messages/openflowprotocol/OFP_Packet_Out.h"
 #include "openflow/messages/openflowprotocol/OFP_Flow_Mod.h"
 
 //INET
-#include "inet/networklayer/contract/ipv4/IPv4Address.h"
-#include "inet/linklayer/common/MACAddress.h"
+#include "inet/networklayer/contract/ipv4/Ipv4Address.h"
+#include "inet/linklayer/common/MacAddress.h"
 
 using namespace omnetpp;
 
@@ -23,11 +23,11 @@ struct CommonHeaderFields{
     uint32_t buffer_id;
     Switch_Info * swInfo;
     uint32_t inport;
-    inet::MACAddress src_mac;
-    inet::MACAddress dst_mac;
+    inet::MacAddress src_mac;
+    inet::MacAddress dst_mac;
     int eth_type;
-    inet::IPv4Address arp_src_adr;
-    inet::IPv4Address arp_dst_adr;
+    inet::Ipv4Address arp_src_adr;
+    inet::Ipv4Address arp_dst_adr;
     int arp_op;
 };
 
@@ -61,7 +61,7 @@ protected:
     virtual void floodPacket(OFP_Packet_In *packet_in_msg);
     virtual void dropPacket(OFP_Packet_In *packet_in_msg);
     virtual void sendPacket(OFP_Packet_In *packet_in_msg, uint32_t outport);
-    virtual void sendFlowModMessage(ofp_flow_mod_command mod_com, const oxm_basic_match &match, int outport, inet::TCPSocket * socket, int idleTimeOut, int hardTimeOut);
+    virtual void sendFlowModMessage(ofp_flow_mod_command mod_com, const oxm_basic_match &match, int outport, inet::TcpSocket * socket, int idleTimeOut, int hardTimeOut);
 
 public:
     AbstractControllerApp();

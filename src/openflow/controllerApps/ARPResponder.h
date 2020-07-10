@@ -4,7 +4,7 @@
 
 #include <omnetpp.h>
 #include "openflow/controllerApps/AbstractControllerApp.h"
-#include "inet/transportlayer/contract/tcp/TCPSocket.h"
+#include "inet/transportlayer/contract/tcp/TcpSocket.h"
 #include "openflow/openflow/controller/Switch_Info.h"
 #include "openflow/messages/openflowprotocol/OFP_Features_Reply.h"
 #include "openflow/messages/openflowprotocol/OFP_Packet_In.h"
@@ -19,7 +19,7 @@ public:
     ~ARPResponder();
     virtual void finish();
 
-    bool addEntry(std::string srcIp, inet::MACAddress srcMac);
+    bool addEntry(std::string srcIp, inet::MacAddress srcMac);
 
 protected:
     void receiveSignal(cComponent *src, simsignal_t id, cObject *obj, cObject *details) override;
@@ -27,10 +27,10 @@ protected:
     virtual void handleMessage(cMessage *msg);
     virtual void handlePacketIn(OFP_Packet_In * packet_in_msg);
 
-    virtual inet::EthernetIIFrame * createArpReply(inet::IPv4Address srcIp, inet::IPv4Address dstIp, inet::MACAddress srcMac, inet::MACAddress dstMac);
+    virtual inet::Packet * createArpReply(inet::Ipv4Address srcIp, inet::Ipv4Address dstIp, inet::MacAddress srcMac, inet::MacAddress dstMac);
 
-    std::map<inet::MACAddress,std::string> macToIp;
-    std::map<std::string,inet::MACAddress> ipToMac;
+    std::map<inet::MacAddress,std::string> macToIp;
+    std::map<std::string,inet::MacAddress> ipToMac;
 
     long answeredArp;
     long floodedArp;

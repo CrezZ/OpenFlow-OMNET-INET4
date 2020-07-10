@@ -3,7 +3,7 @@
 #define ABSTRACTTCPCONTROLLERAPP_H_
 
 #include "openflow/controllerApps/AbstractControllerApp.h"
-#include "inet/transportlayer/contract/tcp/TCPSocket.h"
+#include "inet/transportlayer/contract/tcp/TcpSocket.h"
 
 using namespace omnetpp;
 
@@ -33,10 +33,10 @@ protected:
     std::list<cMessage *> msgList;
     double serviceTime;
 
-    inet::TCPSocket socket;
+    inet::TcpSocket socket;
 
-    inet::TCPSocket *findSocketFor(cMessage *msg);
-    std::map< int, inet::TCPSocket * > socketMap;
+    inet::TcpSocket *findSocketFor(cMessage *msg);
+    std::map< int, inet::TcpSocket * > socketMap;
 
 
 public:

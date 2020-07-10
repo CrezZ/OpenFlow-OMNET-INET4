@@ -1,6 +1,6 @@
 #include "openflow/controllerApps/AbstractControllerApp.h"
 //#include "openflow/messages/openflowprotocol/OFP_Message.h"
-#include "inet/networklayer/arp/ipv4/ARPPacket_m.h"
+#include "inet/networklayer/arp/ipv4/ArpPacket_m.h"
 #include "openflow/openflow/util/ofmessagefactory/OFMessageFactory.h"
 
 using namespace inet;
@@ -65,7 +65,7 @@ void AbstractControllerApp::floodPacket(OFP_Packet_In *packet_in_msg){
     EV << "floodPacket" << '\n';
     packetsFlooded++;
 
-    TCPSocket *socket = controller->findSocketFor(packet_in_msg);
+    TcpSocket *socket = controller->findSocketFor(packet_in_msg);
     controller->sendPacketOut(createFloodPacketFromPacketIn(packet_in_msg), socket);
 }
 
@@ -73,7 +73,7 @@ void AbstractControllerApp::dropPacket(OFP_Packet_In *packet_in_msg){
     EV << "dropPacket" << '\n';
     packetsDropped++;
 
-    TCPSocket *socket = controller->findSocketFor(packet_in_msg);
+    TcpSocket *socket = controller->findSocketFor(packet_in_msg);
     controller->sendPacketOut(createDropPacketFromPacketIn(packet_in_msg), socket);
 }
 
@@ -82,11 +82,11 @@ void AbstractControllerApp::sendPacket(OFP_Packet_In *packet_in_msg, uint32_t ou
     EV << "sendPacket" << '\n';
     numPacketOut++;
 
-    TCPSocket *socket = controller->findSocketFor(packet_in_msg);
+    TcpSocket *socket = controller->findSocketFor(packet_in_msg);
     socket->send(createPacketOutFromPacketIn(packet_in_msg,outport));
 }
 
-void AbstractControllerApp::sendFlowModMessage(ofp_flow_mod_command mod_com, const oxm_basic_match &match, int outport, TCPSocket * socket, int idleTimeOut =1 , int hardTimeOut=0){
+void AbstractControllerApp::sendFlowModMessage(ofp_flow_mod_command mod_com, const oxm_basic_match &match, int outport, TcpSocket * socket, int idleTimeOut =1 , int hardTimeOut=0){
     EV << "sendFlowModMessage" << '\n';
     numFlowMod++;
 
@@ -113,7 +113,7 @@ OFP_Packet_Out * AbstractControllerApp::createPacketOutFromPacketIn(OFP_Packet_I
 
     if (packet_in_msg->getBuffer_id() == OFP_NO_BUFFER){
 
-        EthernetIIFrame *frame =  dynamic_cast<EthernetIIFrame *>(packet_in_msg->getEncapsulatedPacket());
+        cPacket *frame =  dynamic_cast<cPacket *>(packet_in_msg->getEncapsulatedPacket());
         if(frame){
             packetOut = OFMessageFactory::instance()->createPacketOut(&outport, 1, frame->getArrivalGate()->getIndex(), packet_in_msg->getBuffer_id(), frame);
         } else {
@@ -135,7 +135,7 @@ OFP_Packet_Out * AbstractControllerApp::createFloodPacketFromPacketIn(OFP_Packet
 
     if (packet_in_msg->getBuffer_id() == OFP_NO_BUFFER){
 
-        EthernetIIFrame *frame =  dynamic_cast<EthernetIIFrame *>(packet_in_msg->getEncapsulatedPacket());
+        cPacket *frame =  dynamic_cast<cPacket *>(packet_in_msg->getEncapsulatedPacket());
         if(frame){
             packetOut = OFMessageFactory::instance()->createPacketOut(&outport, 1, frame->getArrivalGate()->getIndex(), packet_in_msg->getBuffer_id(), frame);
         } else {
@@ -153,7 +153,7 @@ OFP_Packet_Out * AbstractControllerApp::createDropPacketFromPacketIn(OFP_Packet_
 
     if (packet_in_msg->getBuffer_id() == OFP_NO_BUFFER){
 
-        EthernetIIFrame *frame =  dynamic_cast<EthernetIIFrame *>(packet_in_msg->getEncapsulatedPacket());
+        Packet *frame =  dynamic_cast<Packet *>(packet_in_msg->getEncapsulatedPacket());
         if(frame){
             packetOut = OFMessageFactory::instance()->createPacketOut(nullptr, 0, frame->getArrivalGate()->getIndex(), packet_in_msg->getBuffer_id(), frame);
         } else {
@@ -176,14 +176,14 @@ CommonHeaderFields AbstractControllerApp::extractCommonHeaderFields(OFP_Packet_I
     // packet is encapsulated in packet-in message
     if (headerFields.buffer_id == OFP_NO_BUFFER){
         headerFields.inport = packet_in_msg->getEncapsulatedPacket()->getArrivalGate()->getIndex();
-        headerFields.src_mac = dynamic_cast<EthernetIIFrame *>(packet_in_msg->getEncapsulatedPacket())->getSrc();
-        headerFields.dst_mac = dynamic_cast<EthernetIIFrame *>(packet_in_msg->getEncapsulatedPacket())->getDest();
-        headerFields.eth_type = dynamic_cast<EthernetIIFrame *>(packet_in_msg->getEncapsulatedPacket())->getEtherType();
+        headerFields.src_mac = dynamic_cast<EthernetMacHeader  *>(packet_in_msg->getEncapsulatedPacket())->getSrc();
+        headerFields.dst_mac = dynamic_cast<EthernetMacHeader  *>(packet_in_msg->getEncapsulatedPacket())->getDest();
+        headerFields.eth_type = dynamic_cast<EthernetMacHeader  *>(packet_in_msg->getEncapsulatedPacket())->getEtherType();
 
         if(headerFields.eth_type ==ETHERTYPE_ARP){
-            ARPPacket *arpPacket = check_and_cast<ARPPacket *>((dynamic_cast<EthernetIIFrame *>(packet_in_msg->getEncapsulatedPacket()))->getEncapsulatedPacket());
-            headerFields.arp_src_adr = arpPacket->getSrcIPAddress();
-            headerFields.arp_dst_adr = arpPacket->getDestIPAddress();
+            ArpPacket *arpPacket = check_and_cast<ArpPacket *>((dynamic_cast<Packet *>(packet_in_msg->getEncapsulatedPacket()))->getEncapsulatedPacket());
+            headerFields.arp_src_adr = arpPacket->getSrcIpAddress();
+            headerFields.arp_dst_adr = arpPacket->getDestIpAddress();
             headerFields.arp_op = arpPacket->getOpcode();
         }
     }else{

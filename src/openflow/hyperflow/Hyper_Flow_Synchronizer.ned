@@ -5,8 +5,8 @@ import inet.linklayer.ethernet.EthernetInterface;
 import inet.networklayer.common.InterfaceTable;
 import inet.networklayer.contract.INetworkLayer;
 import inet.networklayer.contract.IRoutingTable;
-import inet.transportlayer.contract.ITCP;
-
+import inet.transportlayer.contract.ITcp;
+import inet.common.MessageDispatcher;
 
 //
 // TODO documentation
@@ -43,7 +43,7 @@ module Hyper_Flow_Synchronizer
             parameters:
                 @display("p=422,35");
         }
-        tcp: <tcpType> like ITCP {
+        tcp: <tcpType> like ITcp {
             parameters:
                 @display("p=246,138");
         }
@@ -55,8 +55,10 @@ module Hyper_Flow_Synchronizer
             parameters:
                 @display("p=355,278;q=queue");
             gates:
-                ifIn[sizeof(ethg)];
-                ifOut[sizeof(ethg)];
+                ifIn;
+                ifOut;
+        }
+        nl_bus: MessageDispatcher {
         }
         eth[sizeof(ethg)]: EthernetInterface {
             parameters:
@@ -66,17 +68,19 @@ module Hyper_Flow_Synchronizer
             @display("p=89,138");
         }
     connections allowunconnected:
-        tcp.ipOut --> networkLayer.transportIn++;
-        tcp.ipIn <-- networkLayer.transportOut++;
+        tcp.ipOut --> networkLayer.transportIn; 
+        tcp.ipIn <-- networkLayer.transportOut;
 
         for i=0..sizeof(ethg)-1 {
             ethg[i] <--> eth[i].phys;
-            eth[i].upperLayerOut --> networkLayer.ifIn[i];
-            eth[i].upperLayerIn <-- networkLayer.ifOut[i];
+            eth[i].upperLayerOut --> nl_bus.in++;
+            networkLayer.ifIn <-- nl_bus.out++;
+            eth[i].upperLayerIn <-- nl_bus.out++;
+            networkLayer.ifOut -->nl_bus.in++;
         }
 
-        tcp.appOut++ --> HyperFlowSynchronizer.tcpIn;
-        HyperFlowSynchronizer.tcpOut --> tcp.appIn++;
+        tcp.appOut --> HyperFlowSynchronizer.tcpIn;
+        HyperFlowSynchronizer.tcpOut --> tcp.appIn;
 }
 
 

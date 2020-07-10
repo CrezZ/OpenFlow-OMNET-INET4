@@ -33,7 +33,7 @@ void ARPResponder::handleMessage(cMessage *msg){
 }
 
 
-bool ARPResponder::addEntry(std::string srcIp, MACAddress srcMac){
+bool ARPResponder::addEntry(std::string srcIp, MacAddress srcMac){
     if(macToIp.count(srcMac) <= 0){
         //add him to our table
         macToIp[srcMac] = srcIp;
@@ -64,7 +64,7 @@ void ARPResponder::handlePacketIn(OFP_Packet_In * packet_in_msg){
                     dropPacket(packet_in_msg);
 
                     //encap the arp reply
-                    inet::EthernetIIFrame* arpReply = createArpReply(
+                    inet::Packet* arpReply = createArpReply(
                         headerFields.arp_dst_adr, headerFields.arp_src_adr,
                         ipToMac[headerFields.arp_dst_adr.str()],
                         headerFields.src_mac);
@@ -99,8 +99,8 @@ void ARPResponder::receiveSignal(cComponent *src, simsignal_t id, cObject *obj, 
     }
 }
 
-EthernetIIFrame * ARPResponder::createArpReply(IPv4Address srcIp, IPv4Address dstIp, MACAddress srcMac,MACAddress dstMac){
-    ARPPacket *arpReply = new ARPPacket("controllerArpReply");
+Packet * ARPResponder::createArpReply(Ipv4Address srcIp, Ipv4Address dstIp, MacAddress srcMac,MacAddress dstMac){
+    ArpPacket *arpReply = new ArpPacket("controllerArpReply");
     arpReply->setOpcode(ARP_REPLY);
     arpReply->setName("arpReply");
     arpReply->setSrcIPAddress(srcIp);
@@ -111,8 +111,8 @@ EthernetIIFrame * ARPResponder::createArpReply(IPv4Address srcIp, IPv4Address ds
     delete arpReply->removeControlInfo();
 
 
-    EthernetIIFrame *frame = NULL;
-    EthernetIIFrame *eth2Frame = new EthernetIIFrame(arpReply->getName());
+    Packet *frame = NULL;
+    Packet *eth2Frame = new Packet(arpReply->getName());
     eth2Frame->setSrc(arpReply->getSrcMACAddress());  // if blank, will be filled in by MAC
     eth2Frame->setDest(arpReply->getDestMACAddress());
     eth2Frame->setEtherType(ETHERTYPE_ARP);

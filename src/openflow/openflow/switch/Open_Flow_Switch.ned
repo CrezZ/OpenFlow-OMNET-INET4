@@ -4,13 +4,13 @@ package openflow.openflow.switch;
 
 import openflow.openflow.switch.engine.OF_Switch;
 
-import inet.linklayer.contract.IWiredNic;
+import inet.linklayer.contract.IWiredInterface;
 import inet.linklayer.ethernet.EthernetInterface;
 import inet.networklayer.common.InterfaceTable;
 import inet.networklayer.contract.INetworkLayer;
 import inet.networklayer.contract.IRoutingTable;
-import inet.transportlayer.contract.ITCP;
-
+import inet.transportlayer.contract.ITcp;
+import inet.common.MessageDispatcher;
 
 module Open_Flow_Switch
 {
@@ -52,7 +52,7 @@ module Open_Flow_Switch
             parameters:
                 @display("p=446,203");
         }
-        tcp: <tcpType> like ITCP {
+        tcp: <tcpType> like ITcp {
             parameters:
                 @display("p=315,90");
         }
@@ -64,14 +64,14 @@ module Open_Flow_Switch
             parameters:
                 @display("p=200,90;q=queue");
             gates:
-                ifIn[sizeof(gateControlPlane)];
-                ifOut[sizeof(gateControlPlane)];
+                ifIn;
+                ifOut;
         }
         eth[sizeof(gateControlPlane)]: EthernetInterface {
             parameters:
                 @display("p=75,90,row,90;q=txQueue");
         }
-        etherMAC[sizeof(gateDataPlane)]: <default("EthernetInterface")> like IWiredNic {
+        etherMAC[sizeof(gateDataPlane)]: <default("EthernetInterface")> like IWiredInterface {
             parameters:
                 mac.promiscuous = true;
                 @display("p=633,90,c,70");
@@ -84,12 +84,18 @@ module Open_Flow_Switch
                 dataPlaneOut[sizeof(gateDataPlane)];
                 dataPlaneIn[sizeof(gateDataPlane)];
         }
+        nl_bus: MessageDispatcher {
+        }
+		tl_bus: MessageDispatcher {
+        }
 
     connections allowunconnected:
         for i=0..sizeof(gateControlPlane)-1 {
             eth[i].phys <--> gateControlPlane[i];
-            eth[i].upperLayerOut --> networkLayer.ifIn[i];
-            eth[i].upperLayerIn <-- networkLayer.ifOut[i];
+            eth[i].upperLayerOut --> nl_bus.in++;
+            networkLayer.ifIn <-- nl_bus.out++;
+            eth[i].upperLayerIn <-- nl_bus.out++;
+            networkLayer.ifOut -->nl_bus.in++;
         }
 
         for i=0..sizeof(gateDataPlane)-1 {
@@ -97,11 +103,11 @@ module Open_Flow_Switch
             OF_Switch.dataPlaneOut[i] --> etherMAC[i].upperLayerIn;
             etherMAC[i].upperLayerOut --> OF_Switch.dataPlaneIn[i];
         }
-        tcp.ipOut --> networkLayer.transportIn++;
-        tcp.ipIn <-- networkLayer.transportOut++;
+        tcp.ipOut --> networkLayer.transportIn;
+        tcp.ipIn <-- networkLayer.transportOut;
 
-        tcp.appOut++ --> OF_Switch.controlPlaneIn;
-        OF_Switch.controlPlaneOut --> tcp.appIn++;
+        tcp.appOut --> OF_Switch.controlPlaneIn;
+        OF_Switch.controlPlaneOut --> tcp.appIn;
 
 
 }

@@ -4,7 +4,7 @@
 
 #include <omnetpp.h>
 #include "openflow/controllerApps/AbstractControllerApp.h"
-#include "inet/linklayer/common/MACAddress.h"
+#include "inet/linklayer/common/MacAddress.h"
 #include <stdint.h>
 
 using namespace omnetpp;
@@ -23,7 +23,7 @@ protected:
     void initialize();
     void doSwitching(OFP_Packet_In *packet_in_msg);
 
-    std::map<Switch_Info *, std::map<inet::MACAddress,uint32_t> > lookupTable;
+    std::map<Switch_Info *, std::map<inet::MacAddress,uint32_t> > lookupTable;
 
     int idleTimeout;
     int hardTimeout;

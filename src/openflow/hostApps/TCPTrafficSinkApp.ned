@@ -3,10 +3,10 @@
 package openflow.hostApps;
 
 
-import inet.applications.contract.ITCPApp;
+import inet.applications.contract.IApp;
 
 
-simple TCPTrafficSinkApp like ITCPApp
+simple TCPTrafficSinkApp like IApp
 {
     parameters:
         @class(ofp::TCPTrafficSinkApp);
