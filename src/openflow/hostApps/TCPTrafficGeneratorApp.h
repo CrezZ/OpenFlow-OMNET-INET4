@@ -27,23 +27,23 @@ struct Stats{
     long transmittedBytes;
 };
 
-class TCPTrafficGeneratorApp : public cSimpleModule, public virtual TCPSocket::CallbackInterface
+class TCPTrafficGeneratorApp : public omnetpp::cSimpleModule, public virtual TcpSocket::ICallback
 {
 
   protected:
-    cTopology topo;
+    omnetpp::cTopology topo;
     int  lineNumbers;
     virtual void initialize() override;
     virtual void handleMessage(cMessage *msg) override;
     unsigned int FileRead( istream & is, vector <char> & buff );
     unsigned int CountLines( const vector <char> & buff, int sz );
-    virtual void socketDataArrived(int connId, void *yourPtr, cPacket *msg, bool urgent) override;
-    virtual void socketEstablished(int connId, void *yourPtr) override;
-    virtual void socketPeerClosed(int connId, void *yourPtr) override;
-    virtual void socketClosed(int connId, void *yourPtr) override;
-    virtual void socketFailure(int connId, void *yourPtr, int code) override;
-    virtual void socketStatusArrived(int connId, void *yourPtr, TCPStatusInfo *status) override;
-    std::map<TCPSocket *,Stats> statistics;
+    virtual void socketDataArrived(int connId, void *yourPtr, cPacket *msg, bool urgent) ;
+    virtual void socketEstablished(int connId, void *yourPtr) ;
+    virtual void socketPeerClosed(int connId, void *yourPtr) ;
+    virtual void socketClosed(int connId, void *yourPtr) ;
+    virtual void socketFailure(int connId, void *yourPtr, int code) ;
+    virtual void socketStatusArrived(int connId, void *yourPtr, TcpStatusInfo *status) ;
+    std::map<TcpSocket *,Stats> statistics;
 
 
     //stats

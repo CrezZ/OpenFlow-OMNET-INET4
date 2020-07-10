@@ -40,7 +40,7 @@ OF_FlowTableEntry::OF_FlowTableEntry(OFP_Flow_Mod* flow_mod) : OF_FlowTableEntry
 }
 
 OF_FlowTableEntry::OF_FlowTableEntry() {
-    simtime_t now = simTime();
+    inet::simtime_t now = omnetpp::simTime();
     _creationTime = now;
     _lastMatched = now;
 }
@@ -81,18 +81,18 @@ OF_FlowTableEntry* OF_FlowTableEntry::createEntryForOFVersion(omnetpp::cXMLEleme
 #endif
 }
 
-simtime_t OF_FlowTableEntry::getTimeOut() {
-    simtime_t timeout = simtime_t::getMaxTime();//never timeout.
+inet::simtime_t OF_FlowTableEntry::getTimeOut() {
+    inet::simtime_t timeout = inet::simtime_t::getMaxTime();//never timeout.
 
     //check if hard timeout or idle timeOut are earlier.
     if(_idleTimeout > 0) {
-        simtime_t idleTimeout =  _lastMatched + _idleTimeout;
+        inet::simtime_t idleTimeout =  _lastMatched + _idleTimeout;
         if(timeout > idleTimeout) {
             timeout = idleTimeout;
         }
     }
     if(_hardTimeout > 0) {
-        simtime_t hardTimeout =  _creationTime + _hardTimeout;
+        inet::simtime_t hardTimeout =  _creationTime + _hardTimeout;
         if(timeout > hardTimeout) {
             timeout = hardTimeout;
         }

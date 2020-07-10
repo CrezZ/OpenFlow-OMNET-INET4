@@ -8,7 +8,7 @@
 
 namespace ofp{
 
-class StaticSpanningTree : public cSimpleModule
+class StaticSpanningTree : public omnetpp::cSimpleModule
 {
 protected:
     struct NodeInfo {
@@ -21,12 +21,12 @@ protected:
         };
 
         typedef std::vector<NodeInfo> NodeInfoVector;
-        cTopology topo_spanntree;
+        omnetpp::cTopology topo_spanntree;
         NodeInfoVector nodeInfo;
 
         virtual int numInitStages() const  {return 5;}
         virtual void initialize(int stage);
-        virtual void handleMessage(cMessage *msg);
+        virtual void handleMessage(omnetpp::cMessage *msg);
 };
 
 } /*end namespace ofp*/

@@ -6,7 +6,11 @@ import inet.networklayer.common.InterfaceTable;
 import inet.networklayer.contract.INetworkLayer;
 import inet.networklayer.contract.IRoutingTable;
 import inet.transportlayer.contract.ITcp;
+<<<<<<< HEAD
 import inet.common.MessageDispatcher;
+=======
+
+>>>>>>> f68a6a33e7756736202e7b0724f61a1dfd3c8d10
 
 //
 // TODO documentation

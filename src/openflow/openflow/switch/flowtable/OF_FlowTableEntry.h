@@ -124,13 +124,13 @@ public:
      * Calculate when this entry expires according to hard or idle timeout.
      * @return The time this entry expires.
      */
-    virtual simtime_t getTimeOut();
+    virtual inet::simtime_t getTimeOut();
 
 //getter and setter
-    const simtime_t& getCreationTime() const {
+    const inet::simtime_t& getCreationTime() const {
         return _creationTime;
     }
-    void setCreationTime(const simtime_t& creationTime) {
+    void setCreationTime(const inet::simtime_t& creationTime) {
         _creationTime = creationTime;
     }
     double getHardTimeout() const {
@@ -145,10 +145,10 @@ public:
     void setIdleTimeout(double idleTimeout) {
         _idleTimeout = idleTimeout;
     }
-    const simtime_t& getLastMatched() const {
+    const inet::simtime_t& getLastMatched() const {
         return _lastMatched;
     }
-    void setLastMatched(const simtime_t& lastMatched) {
+    void setLastMatched(const inet::simtime_t& lastMatched) {
         _lastMatched = lastMatched;
     }
 
@@ -156,11 +156,11 @@ protected:
     /**
      * Simulation timestamp on creation of this entry.
      */
-    simtime_t _creationTime;
+    inet::simtime_t _creationTime;
     /**
      * Simulation timestamp on the last match for this entry
      */
-    simtime_t _lastMatched;
+    inet::simtime_t _lastMatched;
 
     /**
      * in seconds

@@ -113,7 +113,7 @@ OFP_Hello* OF100MessageFactory::createHello() {
     return msg;
 }
 
-OFP_Packet_In* OF100MessageFactory::createPacketIn(ofp_packet_in_reason reason, EthernetIIFrame *frame, uint32_t buffer_id, bool sendFullFrame) {
+OFP_Packet_In* OF100MessageFactory::createPacketIn(ofp_packet_in_reason reason, inet::Packet *packet, uint32_t buffer_id, bool sendFullFrame) {
 
    //TODO maybe use custom reason to abstract from differing ofp versions
 
@@ -122,26 +122,27 @@ OFP_Packet_In* OF100MessageFactory::createPacketIn(ofp_packet_in_reason reason, 
    //create header
    msg->getHeader().version = OFP_VERSION;
    msg->getHeader().type = OFPT_PACKET_IN;
-
+   auto frame = packet->peekAtFront<EthernetMacHeader>();
    //set data fields
    msg->setReason(reason);
    if(sendFullFrame){
-       msg->encapsulate(frame->dup());
+       msg->encapsulate(packet->dup());
        msg->setBuffer_id(buffer_id);
    } else {
        // packet in buffer so only send header fields
        oxm_basic_match match = oxm_basic_match();
-       match.in_port = frame->getArrivalGate()->getIndex();
+
+       match.in_port = packet->getArrivalGateId();
 
        match.dl_src = frame->getSrc();
        match.dl_dst = frame->getDest();
-       match.dl_type = frame->getEtherType();
+       match.dl_type = frame->getTypeOrLength();
        //extract ARP specific match fields if present
-       if(frame->getEtherType()==ETHERTYPE_ARP){
-           ARPPacket *arpPacket = check_and_cast<ARPPacket *>(frame->getEncapsulatedPacket());
+       if(frame->getTypeOrLength()==ETHERTYPE_ARP){
+           ArpPacket *arpPacket = check_and_cast<ArpPacket *>(packet->getEncapsulatedPacket());
            match.nw_proto = arpPacket->getOpcode();
-           match.nw_src = arpPacket->getSrcIPAddress();
-           match.nw_dst = arpPacket->getDestIPAddress();
+           match.nw_src = arpPacket->getSrcIpAddress();
+           match.nw_dst = arpPacket->getDestIpAddress();
        }
        msg->setMatch(match);
        msg->setBuffer_id(buffer_id);
@@ -153,7 +154,7 @@ OFP_Packet_In* OF100MessageFactory::createPacketIn(ofp_packet_in_reason reason, 
     return msg;
 }
 
-OFP_Packet_Out* OF100MessageFactory::createPacketOut(uint32_t* outports, int n_outports, int in_port, uint32_t buffer_id, EthernetIIFrame *frame) {
+OFP_Packet_Out* OF100MessageFactory::createPacketOut(uint32_t* outports, int n_outports, int in_port, uint32_t buffer_id, Packet *packet) {
     OFP_Packet_Out *msg = new OFP_Packet_Out("packetOut");
 
     //create header
@@ -163,8 +164,8 @@ OFP_Packet_Out* OF100MessageFactory::createPacketOut(uint32_t* outports, int n_o
 
     if (buffer_id == OFP_NO_BUFFER)
     {   //No Buffer so send full frame.
-        if(frame){
-            msg->encapsulate(frame->dup());
+        if(packet){
+            msg->encapsulate(packet->dup());
             msg->setIn_port(in_port);
         } else {
             throw cRuntimeError("OF100MessageFactory::createPacketOut: OFP_NO_BUFFER was set but no frame was provided.");

@@ -63,7 +63,7 @@ void OF_Controller::initialize(){
     const char *address = par("address");
     int port = par("port");
     _socket.setOutputGate(gate("tcpOut"));
-    _socket.setDataTransferMode(TCP_TRANSFER_OBJECT);
+    //_socket.setDataTransferMode(TCP_TRANSFER_OBJECT);
     _socket.bind(address[0] ? L3Address(address) : L3Address(), port);
     _socket.listen();
 
@@ -231,7 +231,7 @@ void OF_Controller::handleExperimenterMsg(OFP_Message* of_msg) {
 }
 
 
-void OF_Controller::sendPacketOut(OFP_Message *of_msg, TCPSocket *socket){
+void OF_Controller::sendPacketOut(OFP_Message *of_msg, TcpSocket *socket){
     Enter_Method_Silent();
     take(of_msg);
     EV << "OFA_controller::sendPacketOut" << endl;
@@ -242,13 +242,13 @@ void OF_Controller::sendPacketOut(OFP_Message *of_msg, TCPSocket *socket){
 
 
 void OF_Controller::registerConnection(OFP_Message *msg){
-    TCPSocket *socket = findSocketFor(msg);
+    TcpSocket *socket = findSocketFor(msg);
     if(!socket){
-        socket = new TCPSocket(msg);
+        socket = new TcpSocket(msg);
         socket->setOutputGate(gate("tcpOut"));
         Switch_Info swInfo = Switch_Info();
         swInfo.setSocket(socket);
-        swInfo.setConnId(socket->getConnectionId());
+        swInfo.setConnId(socket->getSocketId());
         swInfo.setMacAddress("");
         swInfo.setNumOfPorts(-1);
         swInfo.setVersion(msg->getHeader().version);
@@ -257,12 +257,13 @@ void OF_Controller::registerConnection(OFP_Message *msg){
 }
 
 
-TCPSocket *OF_Controller::findSocketFor(cMessage *msg) const{
-    TCPCommand *ind = dynamic_cast<TCPCommand *>(msg->getControlInfo());
+TcpSocket *OF_Controller::findSocketFor(cMessage *msg) const{
+    TcpCommand *ind = dynamic_cast<TcpCommand *>(msg->getControlInfo());
     if (!ind)
         throw cRuntimeError("TCPSocketMap: findSocketFor(): no TCPCommand control info in message (not from TCP?)");
 
-    int connId = ind->getConnId();
+//    int connId = ind->getConnId();
+      int connId = ind->getUserId();
     for(auto i=_switchesList.begin(); i != _switchesList.end(); ++i) {
         if((*i).getConnId() == connId){
             return (*i).getSocket();
@@ -273,11 +274,11 @@ TCPSocket *OF_Controller::findSocketFor(cMessage *msg) const{
 
 
 Switch_Info *OF_Controller::findSwitchInfoFor(cMessage *msg) {
-    TCPCommand *ind = dynamic_cast<TCPCommand *>(msg->getControlInfo());
+    TcpCommand *ind = dynamic_cast<TcpCommand *>(msg->getControlInfo());
     if (!ind)
         return NULL;
-
-    int connId = ind->getConnId();
+    //    int connId = ind->getConnId();
+    int connId = ind->getUserId();
     for(auto i=_switchesList.begin(); i != _switchesList.end(); ++i) {
         if((*i).getConnId() == connId){
             return &(*i);
@@ -286,7 +287,7 @@ Switch_Info *OF_Controller::findSwitchInfoFor(cMessage *msg) {
     return NULL;
 }
 
-TCPSocket *OF_Controller::findSocketForChassisId(std::string chassisId) const{
+TcpSocket *OF_Controller::findSocketForChassisId(std::string chassisId) const{
     for(auto i=_switchesList.begin(); i != _switchesList.end(); ++i) {
         if(strcmp((*i).getMacAddress().c_str(),chassisId.c_str())==0){
             return (*i).getSocket();

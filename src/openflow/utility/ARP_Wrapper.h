@@ -19,14 +19,14 @@ public:
     const std::string& getSrcIp() const;
     void setSrcIp(const std::string& srcIp);
 
-    const inet::MACAddress& getSrcMacAddress() const;
-    void setSrcMacAddress(const inet::MACAddress& macAddress);
+    const inet::MacAddress& getSrcMacAddress() const;
+    void setSrcMacAddress(const inet::MacAddress& macAddress);
 
 
 
 protected:
     std::string srcIp;
-    inet::MACAddress srcMac;
+    inet::MacAddress srcMac;
 };
 
 } /*end namespace ofp*/

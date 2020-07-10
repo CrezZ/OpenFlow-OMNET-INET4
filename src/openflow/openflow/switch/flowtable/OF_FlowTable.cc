@@ -48,7 +48,7 @@ OF_FlowTableEntry* OF_FlowTable::lookup(oxm_basic_match& match) {
     for(auto iter =_entries.begin();iter != _entries.end();++iter){
 
         if ((*iter)->tryMatch(match)){
-            (*iter)->setLastMatched(simTime());
+            (*iter)->setLastMatched(omnetpp::simTime());
             return (*iter);
         }
     }

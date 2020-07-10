@@ -37,8 +37,8 @@ public:
     virtual OFP_Features_Request* createFeatureRequest();
     virtual OFP_Flow_Mod* createFlowModMessage(ofp_flow_mod_command mod_com,const oxm_basic_match& match, int pritority, uint32_t* outports, int n_outports, uint32_t idleTimeOut=1 , uint32_t hardTimeOut=0);
     virtual OFP_Hello* createHello();
-    virtual OFP_Packet_In* createPacketIn(ofp_packet_in_reason reason, inet::EthernetIIFrame *frame, uint32_t buffer_id, bool sendFullFrame);
-    virtual OFP_Packet_Out* createPacketOut(uint32_t* outports, int n_outports, int in_port, uint32_t buffer_id = OFP_NO_BUFFER, inet::EthernetIIFrame *frame = nullptr);
+    virtual OFP_Packet_In* createPacketIn(ofp_packet_in_reason reason, inet::Packet *packet, uint32_t buffer_id, bool sendFullFrame);
+    virtual OFP_Packet_Out* createPacketOut(uint32_t* outports, int n_outports, int in_port, uint32_t buffer_id = OFP_NO_BUFFER, inet::Packet *packet = nullptr);
 };
 
 } /* namespace ofp */

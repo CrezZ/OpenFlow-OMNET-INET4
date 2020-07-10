@@ -26,9 +26,9 @@ Flow_Table_Entry::Flow_Table_Entry(OFP_Flow_Mod *flowModMsg){
     idleTimeout = flowModMsg->getIdle_timeout();
 
     if(idleTimeout != 0){
-        expiresAt = idleTimeout+simTime();
+        expiresAt = idleTimeout+omnetpp::simTime();
     } else {
-        expiresAt = hardTimeout+simTime();
+        expiresAt = hardTimeout+omnetpp::simTime();
     }
 }
 
@@ -52,7 +52,7 @@ double Flow_Table_Entry::getIdleTimeout() const{
     return idleTimeout;
 }
 
-SimTime Flow_Table_Entry::getExpiresAt() const{
+inet::SimTime Flow_Table_Entry::getExpiresAt() const{
     return expiresAt;
 }
 
@@ -92,7 +92,7 @@ void Flow_Table_Entry::setIdleTimeout(double idleTimeout){
     this->idleTimeout = idleTimeout;
 }
 
-void Flow_Table_Entry::setExpiresAt(SimTime expiresAt){
+void Flow_Table_Entry::setExpiresAt(inet::SimTime expiresAt){
     this->expiresAt = expiresAt;
 }
 

@@ -81,11 +81,11 @@ OFP_Hello* OF151MessageFactory::createHello() {
     return nullptr;
 }
 
-OFP_Packet_In* OF151MessageFactory::createPacketIn(ofp_packet_in_reason reason, EthernetIIFrame *frame, uint32_t buffer_id, bool sendFullFrame) {
+OFP_Packet_In* OF151MessageFactory::createPacketIn(ofp_packet_in_reason reason, Packet *packet, uint32_t buffer_id, bool sendFullFrame) {
     return nullptr;
 }
 
-OFP_Packet_Out* OF151MessageFactory::createPacketOut(uint32_t* outports, int n_outports, int in_port, uint32_t buffer_id, EthernetIIFrame *frame) {
+OFP_Packet_Out* OF151MessageFactory::createPacketOut(uint32_t* outports, int n_outports, int in_port, uint32_t buffer_id, Packet *packet) {
     return nullptr;
 }
 

@@ -43,7 +43,7 @@ class Flow_Table_Entry {
         uint16_t getFlags() const;
         double getHardTimeout() const;
         double getIdleTimeout() const;
-        SimTime getExpiresAt() const;
+        inet::SimTime getExpiresAt() const;
         ofp_action_output getInstructions() const;
         const std::vector<ofp_action_output>& getInstructionsVector() const;
         oxm_basic_match getMatch() const;
@@ -54,7 +54,7 @@ class Flow_Table_Entry {
         void setFlags(uint16_t flags);
         void setHardTimeout(double hardTimeout);
         void setIdleTimeout(double idleTimeout);
-        void setExpiresAt(SimTime expiresAt);
+        void setExpiresAt(inet::SimTime expiresAt);
         void setInstructions(ofp_action_output instructions[1]);
         void setInstructionsVector(std::vector<ofp_action_output> instructions);
         void setMatch(oxm_basic_match match);
@@ -69,7 +69,7 @@ class Flow_Table_Entry {
         int priority;
         double idleTimeout;
         double hardTimeout;
-        SimTime expiresAt;
+        inet::SimTime expiresAt;
 };
 
 } /*end namespace ofp*/

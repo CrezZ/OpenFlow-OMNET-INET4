@@ -1,7 +1,11 @@
 
 
 package openflow.openflow.controller;
+<<<<<<< HEAD
 import inet.applications.contract.IApp;
+=======
+import inet.applications.contract.IApp; //TODO - select right app
+>>>>>>> f68a6a33e7756736202e7b0724f61a1dfd3c8d10
 import inet.linklayer.ethernet.EthernetInterface;
 import inet.networklayer.common.InterfaceTable;
 import inet.networklayer.contract.INetworkLayer;
@@ -63,10 +67,23 @@ module Open_Flow_Controller
             parameters:
                 @display("p=355,278;q=queue");
             gates:
+<<<<<<< HEAD
                 ifIn;
                 ifOut;
+=======
+//                ifIn[sizeof(ethg)];
+//                ifOut[sizeof(ethg)];
+>>>>>>> f68a6a33e7756736202e7b0724f61a1dfd3c8d10
         }
-        eth[sizeof(ethg)]: EthernetInterface {
+       l7: MessageDispatcher {
+            parameters:
+                @display("p=750,446;b=1000,5,,,,1");
+        }        
+ 	   l4: MessageDispatcher {
+            parameters:
+                @display("p=750,446;b=1000,5,,,,1");
+        }       
+         eth[sizeof(ethg)]: EthernetInterface {
             parameters:
                 @display("p=519,278,row,90;q=txQueue");
         }
@@ -84,6 +101,7 @@ module Open_Flow_Controller
             serviceTime = serviceTime;
         }
     connections allowunconnected:
+<<<<<<< HEAD
         tcp.ipOut --> networkLayer.transportIn;
         tcp.ipIn <-- networkLayer.transportOut;
 
@@ -104,6 +122,30 @@ module Open_Flow_Controller
         tl_bus.out++ --> OF_Controller.tcpIn;
         OF_Controller.tcpOut --> tl_bus.in++;
         tl_bus.out++ --> tcp.appIn;
+=======
+        tcp.ipOut --> l7.in++;
+        networkLayer.transportIn <-- l7.out++;
+        tcp.ipIn <-- l7.out++;
+        networkLayer.transportOut --> l7.in++;
+
+        for i=0..sizeof(ethg)-1 {
+            ethg[i] <--> eth[i].phys;
+            eth[i].upperLayerOut --> l7.in++;
+            eth[i].upperLayerIn <-- l7.out++;
+        }
+
+        for i=0..numTcpControllerApps-1 {
+            tcpControllerApps[i].socketOut --> l4.in++;
+            tcp.appIn <--l4.out++;
+            tcpControllerApps[i].socketIn <-- l4.out++;
+            tcp.appOut -->l4.in++;
+        }
+
+        tcp.appOut --> l7.in++;
+        OF_Controller.tcpIn <--l7.out++;
+        OF_Controller.tcpOut --> l7.in++;
+        tcp.appIn <--l7.out++;
+>>>>>>> f68a6a33e7756736202e7b0724f61a1dfd3c8d10
 }
 
 

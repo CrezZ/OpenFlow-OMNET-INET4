@@ -17,13 +17,13 @@ namespace ofp{
 /**
  * Single-connection TCP application.
  */
-class INET_API TCPTrafficSinkApp : public cSimpleModule, public virtual TCPSocket::CallbackInterface
+class INET_API TCPTrafficSinkApp : public omnetpp::cSimpleModule, public virtual TcpSocket::CallbackInterface
 {
 
   protected:
     int localPort;
     const char * localAddress;
-    TCPSocket socket;
+    TcpSocket socket;
     virtual void initialize() override;
     virtual void handleMessage(cMessage *msg) override;
     virtual void socketDataArrived(int connId, void *yourPtr, cPacket *msg, bool urgent) override;

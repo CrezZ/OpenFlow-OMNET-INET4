@@ -10,6 +10,7 @@
 #include "openflow/messages/openflowprotocol/OFP_Message.h"
 #include "openflow/openflow/switch/flowtable/old/Flow_Table.h"
 #include <vector>
+#include "inet/common/packet/Packet.h"
 
 namespace ofp{
 
@@ -17,7 +18,7 @@ namespace ofp{
  * Openflow Switching Engine.
  * TODO use new FlowTable module.
  */
-class OF_Switch: public cSimpleModule
+class OF_Switch: public ::omnetpp::cSimpleModule
 {
 public:
     OF_Switch();
@@ -37,31 +38,31 @@ protected:
     long flowTableMiss;
 
     //stats
-    simsignal_t dpPingPacketHash;
-    simsignal_t cpPingPacketHash;
-    simsignal_t queueSize;
-    simsignal_t bufferSize;
-    simsignal_t waitingTime;
+    ::omnetpp::simsignal_t dpPingPacketHash;
+    ::omnetpp::simsignal_t cpPingPacketHash;
+    ::omnetpp::simsignal_t queueSize;
+    ::omnetpp::simsignal_t bufferSize;
+    ::omnetpp::simsignal_t waitingTime;
 
-    std::list<cMessage *> msgList;
+    std::list<::omnetpp::cMessage *> msgList;
     std::vector<ofp_port> portVector;
 
 
     Buffer buffer;
     Flow_Table flowTable;
-    inet::TCPSocket socket;
+    inet::TcpSocket socket;
 
     virtual void initialize();
-    virtual void handleMessage(cMessage *msg);
+    virtual void handleMessage(::omnetpp::cMessage *msg);
     void connect(const char *connectToAddress);
 
-    void processQueuedMsg(cMessage *data_msg);
+    void processQueuedMsg(::omnetpp::cMessage *data_msg);
     void handleFeaturesRequestMessage(OFP_Message *of_msg);
     void handleFlowModMessage(OFP_Message *of_msg);
     void handlePacketOutMessage(OFP_Message *of_msg);
-    void executePacketOutAction(ofp_action_output *action, inet::EthernetIIFrame *frame, uint32_t inport);
-    void processFrame(inet::EthernetIIFrame *frame);
-    void handleMissMatchedPacket(inet::EthernetIIFrame *frame);
+    void executePacketOutAction(ofp_action_output *action, inet::Packet *packet, uint32_t inport);
+    void processFrame(inet::Packet *packet);
+    void handleMissMatchedPacket(inet::Packet *packet);
 };
 
 } /*end namespace ofp*/
